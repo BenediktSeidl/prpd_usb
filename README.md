@@ -14,7 +14,7 @@ apt-get install python3 python3-venv
 git clone https://github.com/BenediktSeidl/prpd_usb.git
 cd prpd_usb
 python3 -mvenv v
-soure v/bin/activate
+source v/bin/activate
 pip install -e .
 
 # print data on stdout
