@@ -5,7 +5,7 @@ from .. import prpd
 
 
 def format_labels(labels):
-    return ",".join(f'{k}:"{v}"' for k, v in labels.items())
+    return ",".join(f'{k}="{v}"' for k, v in labels.items())
 
 
 class Metrics:
@@ -16,15 +16,17 @@ class Metrics:
     def metrics(self):
         result = []
         for command, field, time, value in self._reader.read():
-            milliseconds_since_epoch = time * 1000
-            prom_id = f"{command.name}_{field.name}"
+            milliseconds_since_epoch = int(time * 1000)
             labels = {
                 "unit": field.unit,
                 "source": "prpd_usb",
             }
+            field_name = field.name
             phase = re.match(r".*(phase_\d)$", field.name)
             if phase:
                 labels["phase"] = phase.groups()[0]
+                field_name = field.name.rsplit("_", 2)[0]
+            prom_id = f"prpd_usb_{command.name}_{field_name}"
 
             result.append(
                 f'#TYPE {prom_id} gauge\n'
