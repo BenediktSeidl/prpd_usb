@@ -15,7 +15,7 @@ git clone https://github.com/BenediktSeidl/prpd_usb.git
 cd prpd_usb
 python3 -mvenv v
 source v/bin/activate
-pip install -e .
+pip install .
 
 # print data on stdout
 prpd_usb -vvv stdout
@@ -90,6 +90,18 @@ systemctl start prpd_usb
 
 See [doc/grafana_dashboard.json](doc/grafana_dashboard.json) for a simple
 dashboard you can import into grafana.
+
+
+## Updating
+
+```
+cd prpd_usb
+source v/bin/activate
+pip install .
+# as root:
+systemctl restart prpd_usb
+```
+
 
 ## Development
 
