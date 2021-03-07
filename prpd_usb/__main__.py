@@ -7,6 +7,8 @@ from .output.stdout import main as run_stdout
 from .output.prometheus import main as run_prometheus
 from .output.mqtt import main as run_mqtt
 
+def print_version(_):
+    print(__version__)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -17,6 +19,8 @@ def main():
     parser.add_argument(
         '-q', help='more quiet',
         dest='loglevel', const=+10, action='append_const')
+    parser.add_argument(
+        "--version", action='store_const', dest="func", const=print_version)
 
     parser.set_defaults(func=lambda options: parser.print_help())
 
