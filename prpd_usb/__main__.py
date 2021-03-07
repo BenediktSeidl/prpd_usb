@@ -62,6 +62,6 @@ def main():
         level=max(10, min(50, sum(options.loglevel))),
         format="%(asctime)s %(levelname)s :: %(name)s :: %(message)s",
     )
-    logging.info("starting prpd_usb version %s", __version__)
+    logging.warning("starting prpd_usb version %s", __version__)
 
     options.func(options)
