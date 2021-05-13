@@ -3,7 +3,12 @@
 Read data of your NEDAP PowerRouter via USB. Current output modules:
 json on stdout, mqtt and a prometheus exporter.
 
-Tested with NEDAP PowerRouter `PR37Bi` Version `7.1.2`
+Tested with
+* NEDAP PowerRouter `PR37Bi` Software version `7.1.2`
+
+Support for
+* NEDAP PowerRouter `PR50SB` Software version `Unknown`
+
 
 ## Installing
 
@@ -118,7 +123,7 @@ Provides sample data to test without an PowerRouter
 socat PTY,link=/tmp/tty10 PTY,link=/tmp/tty11
 
 # new terminal: create fake data
-prpd_usb faker /tmp/tty10
+prpd_usb faker /tmp/tty10 PR37Bi
 
 # test prpd_usb
 prpd_usb --device /tmp/tty11 stdout

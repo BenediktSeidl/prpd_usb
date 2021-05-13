@@ -1,43 +1,62 @@
 import logging
+from itertools import chain
 
 import serial
 
 logger = logging.getLogger(__name__)
 
+h = bytes.fromhex
 
 DATA = dict([
     (
-        bytes.fromhex("5a0071050000dc07a5"),
-        bytes.fromhex("5aff7105000c0000000000000000017e4cc02057a5"),
+        h("5a0052500000481ca5"), {
+            "PR37Bi": h("5aff52500010393536343232355858585858585858583d97a5"),
+            "PR50SB": h("5aff5250001039353633333639585858585858585858b6b4a5"),
+            "UNKNOWN": h("5aff5250001039393939393939585858585858585858ba87a5")}
     ), (
-        bytes.fromhex("5a00710400001c56a5"),
-        bytes.fromhex("5aff7104000c00781e64004ae7c80041c198baa4a5"),
+        h("5a0070020000e1b7a5"), {
+            "PR50SB": h("5aff7002001671d4000001a971b6000001aaf04309b0020801d60522150ea5")}
     ), (
-        bytes.fromhex("5a0071030000dde7a5"),
-        bytes.fromhex("5aff71030008004cb95600d26b153ae0a5"),
+        h("5a00710200001db6a5"), {
+            "PR50SB": h("5aff7102000c00a1e59a00a0e9970142cf306ab2a5")}
     ), (
-        bytes.fromhex("5a00700500002006a5"),
-        bytes.fromhex("5aff7005000e04130000fffdffff00000009000e5f95a5"),
+        h("5a0071050000dc07a5"), {
+            "PR37Bi": h("5aff7105000c0000000000000000017e4cc02057a5"),
+            "PR50SB": h("5aff7105000c0000000000000000000000005402a5")},
     ), (
-        bytes.fromhex("5a0070010000e147a5"),
-        bytes.fromhex("5aff70010015154b0000026a0000031b4143014c4c00dc01d700005df6a5"),
+        h("5a00710400001c56a5"), {
+            None: h("5aff7104000c00781e64004ae7c80041c198baa4a5")},
     ), (
-        bytes.fromhex("5a00710100001d46a5"),
-        bytes.fromhex("5aff7101000800598b6f00549eee6ed0a5"),
+        h("5a0071030000dde7a5"), {
+            None: h("5aff71030008004cb95600d26b153ae0a5")},
     ), (
-        bytes.fromhex("5a0070040000e057a5"),
-        bytes.fromhex("5aff7004001a051300750061002008ca08d008bcff0e00d5002f010700d600492725a5"),
+        h("5a00700500002006a5"), {
+            "PR37Bi": h("5aff7005000e04130000fffdffff00000009000e5f95a5"),
+            # PR50SB: status 16 could mean not connected?!
+            "PR50SB": h("5aff7005000e0010000000000000000000000000f2eda5")},
     ), (
-        bytes.fromhex("5a0031040000dc43a5"),
-        bytes.fromhex("5aff31040006000da0045c9b9cbca5"),
+        h("5a0070010000e147a5"), {
+            None: h("5aff70010015154b0000026a0000031b4143014c4c00dc01d700005df6a5")},
     ), (
-        bytes.fromhex("5a00230000006507a5"),
-        bytes.fromhex("5aff230000170218bfcb991e3b6c0c0b0a0d0c0b0a000000000d0c0b0ae019a5"),
+        h("5a00710100001d46a5"), {
+            None: h("5aff7101000800598b6f00549eee6ed0a5")},
     ), (
-        bytes.fromhex("5a007003000021e6a5"),
-        bytes.fromhex("5aff7003000a138708bf00c8c913001205b8a5"),
+        h("5a0070040000e057a5"), {
+            None: h("5aff7004001a051300750061002008ca08d008bcff0e00d5002f010700d600492725a5")},
+    ), (
+        h("5a0031040000dc43a5"), {
+            None: h("5aff31040006000da0045c9b9cbca5")},
+    ), (
+        h("5a00230000006507a5"), {
+            None: h("5aff230000170218bfcb991e3b6c0c0b0a0d0c0b0a000000000d0c0b0ae019a5")},
+    ), (
+        h("5a007003000021e6a5"), {
+            None: h("5aff7003000a138708bf00c8c913001205b8a5")},
     )
 ])
+DEVICES = set(i for i in chain.from_iterable(v.keys()
+              for v in DATA.values()) if i is not None)
+
 
 def main(args):
     with serial.Serial(args.serial_device, 115200) as ser:
@@ -49,4 +68,14 @@ def main(args):
             logger.debug("current read_buffer %s", read_buffer.hex())
             if read_buffer in DATA:
                 logging.info("found command, sending response")
-                ser.write(DATA[read_buffer])
+                answer = DATA[read_buffer]
+                if args.model in answer:
+                    response = answer[args.model]
+                elif None in answer:
+                    response = answer[None]
+                else:
+                    logging.error("could not find answer for this model!")
+                    continue
+                ser.write(response)
+            else:
+                logging.error("command not found")

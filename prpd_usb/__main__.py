@@ -2,7 +2,7 @@ import argparse
 import logging
 
 from . import __version__
-from .faker import main as run_faker
+from .faker import main as run_faker, DEVICES
 from .output.stdout import main as run_stdout
 from .output.prometheus import main as run_prometheus
 from .output.mqtt import main as run_mqtt
@@ -27,11 +27,19 @@ def main():
     parser.add_argument(
         '--device', default="/dev/ttyUSB0")
     subparsers = parser.add_subparsers()
+    parser.add_argument(
+        '--model', help='Powerrouter Model (leave blank for auto detect)',
+        choices=DEVICES,
+    )
 
     p_faker = subparsers.add_parser(
         'faker', help='run helper that produces data like power router does')
     p_faker.add_argument(
         'serial_device', help='device or port to send fake data to',
+    )
+    p_faker.add_argument(
+        'model', help='Powerrouter Model to fake',
+        choices=DEVICES,
     )
     p_faker.set_defaults(func=run_faker)
 
