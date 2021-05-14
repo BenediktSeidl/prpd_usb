@@ -94,7 +94,9 @@ systemctl start prpd_usb
 ```
 
 See [doc/grafana_dashboard.json](doc/grafana_dashboard.json) for a simple
-dashboard you can import into grafana.
+dashboard you can import into grafana. Please note that this dashboard shows
+the fields of `PR37Bi` if you use this tool with another model you will have to
+adapt the dashboard on your own. All fields should start with `prpd_usb_`.
 
 
 ## Updating
