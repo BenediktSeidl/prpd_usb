@@ -6,6 +6,7 @@ from .faker import main as run_faker, DEVICES
 from .output.stdout import main as run_stdout
 from .output.prometheus import main as run_prometheus
 from .output.mqtt import main as run_mqtt
+from .output.mqtt_openwb import main as run_mqtt_openwb
 
 def print_version(_):
     print(__version__)
@@ -55,14 +56,15 @@ def main():
 
     p_mqtt = subparsers.add_parser(
         'mqtt', help='publish data to mqtt')
-    p_mqtt.add_argument("--hostname", default="localhost")
-    p_mqtt.add_argument("--port", default=1883, type=int)
-    p_mqtt.add_argument("--password")
-    p_mqtt.add_argument("--username")
+    add_mqtt_args(p_mqtt)
     p_mqtt.add_argument("--prefix", default="prpd_usb")
     p_mqtt.add_argument("--payload-simple", action="store_true")
-    p_mqtt.add_argument("--interval", default=30, type=int)
     p_mqtt.set_defaults(func=run_mqtt)
+
+    p_mqtt_openwb = subparsers.add_parser(
+        'mqtt-openwb', help='publish data to mqtt undestood by openwb')
+    add_mqtt_args(p_mqtt_openwb)
+    p_mqtt_openwb.set_defaults(func=run_mqtt_openwb)
 
     options = parser.parse_args()
 
@@ -73,3 +75,10 @@ def main():
     logging.warning("starting prpd_usb version %s", __version__)
 
     options.func(options)
+
+def add_mqtt_args(subparser):
+    subparser.add_argument("--hostname", default="localhost")
+    subparser.add_argument("--port", default=1883, type=int)
+    subparser.add_argument("--password")
+    subparser.add_argument("--username")
+    subparser.add_argument("--interval", default=30, type=int)
