@@ -2,6 +2,7 @@ import logging
 import time
 from contextlib import contextmanager
 import struct
+import threading
 
 import serial
 import libscrc
@@ -13,6 +14,9 @@ logger = logging.getLogger(__name__)
 
 @contextmanager
 def open(args):
+    if not args.open_prpd:
+        yield None
+        return
     logger.info("opening serial port '%s'", args.device)
     with serial.Serial(args.device, 115200, timeout=2) as ser:
         logger.debug("successfully opened serial port '%s'", args.device)
@@ -27,6 +31,7 @@ def crc(data):
 
 class _PrPd:
     def __init__(self, serial):
+        self.lock = threading.Lock()  # run two outputs in parallel
         self._serial = serial
         self._model = None
 
@@ -72,10 +77,11 @@ class _PrPd:
         logger.info(f"Identified model {self._model}")
 
     def read(self):
-        for command in self._get_commands():
-            time_response = time.time()
-            unpacked = self._command(command)
-            for field, response in zip(command.fields, unpacked):
-                if field.name is None:
-                    continue
-                yield FieldResult(command, field, time_response, response * field.factor)
+        with self.lock:
+            for command in self._get_commands():
+                time_response = time.time()
+                unpacked = self._command(command)
+                for field, response in zip(command.fields, unpacked):
+                    if field.name is None:
+                        continue
+                    yield FieldResult(command, field, time_response, response * field.factor)

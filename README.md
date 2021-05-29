@@ -83,7 +83,7 @@ StartLimitIntervalSec=0 # always restart
 Restart=always
 RestartSec=20
 User=pi
-ExecStart=/home/pi/prpd_usb/v/bin/prpd_usb prometheus --bind 127.0.0.1
+ExecStart=/home/pi/prpd_usb/v/bin/prpd_usb prometheus --prom-bind 127.0.0.1
 
 [Install]
 WantedBy=default.target

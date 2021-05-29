@@ -37,14 +37,13 @@ class Metrics:
         return "".join(result)
 
 
-def main(args):
+def main(prpd_reader, args):
     config = {'global': {
-        'server.socket_host': args.bind,
-        'server.socket_port': args.port,
+        'server.socket_host': args.prom_bind,
+        'server.socket_port': args.prom_port,
         'engine.autoreload.on': False,
         'log.screen': False,
         'log.access_file': '',
         'log.error_file': '',
     }}
-    with prpd.open(args) as reader:
-        cherrypy.quickstart(Metrics(reader), '/', config)
+    cherrypy.quickstart(Metrics(prpd_reader), '/', config)

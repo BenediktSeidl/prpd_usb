@@ -4,7 +4,6 @@ from collections import namedtuple
 
 from paho.mqtt import publish
 
-from .. import prpd
 
 Direct = namedtuple('Direct', ['key'])
 Map = namedtuple('Map', ['keys', 'function'])
@@ -37,18 +36,17 @@ MAPPING = {
 }
 
 
-def main(args):
+def main(prpd_reader, args):
     auth = {}
-    if args.password and args.username:
-        auth["password"] = args.password
-        auth["username"] = args.username
+    if args.mqtt_password and args.mqtt_username:
+        auth["password"] = args.mqtt_password
+        auth["username"] = args.mqtt_username
     while True:
         messages = []
         data = {}
 
-        with prpd.open(args) as reader:
-            for command, field, _time, value in reader.read():
-                data[(command.name, field.name)] = value
+        for command, field, _time, value in prpd_reader.read():
+            data[(command.name, field.name)] = value
 
         for topic, mapping in MAPPING.items():
             if isinstance(mapping, Direct):
@@ -62,5 +60,5 @@ def main(args):
                 "payload": json.dumps(payload),
             })
 
-        publish.multiple(messages, hostname=args.hostname, port=args.port, auth=auth)
-        time.sleep(args.interval)
+        publish.multiple(messages, hostname=args.mqtt_hostname, port=args.mqtt_port, auth=auth)
+        time.sleep(args.mqtt_interval)

@@ -58,7 +58,7 @@ DEVICES = set(i for i in chain.from_iterable(v.keys()
               for v in DATA.values()) if i is not None)
 
 
-def main(args):
+def main(_, args):
     with serial.Serial(args.serial_device, 115200) as ser:
         logger.info("opened serial port %s", args.serial_device)
         read_buffer = bytes([0]*9)
