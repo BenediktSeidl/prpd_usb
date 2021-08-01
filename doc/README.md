@@ -18,8 +18,8 @@
   ## -> request
     #### -> command
         #### -> request payload length
-	    #### -> crc: modbus
-	        ## -> end
+            #### -> crc: modbus
+                ## -> end
 ```
 
 #### Response
@@ -30,9 +30,9 @@
   ## -> response
     #### -> response to command
         #### -> response payload length
-	    ######################## -> payload
+            ######################## -> payload
                                     #### -> crc: modbus
-				        ## -> end
+                                        ## -> end
 ```
 
 See [prpd_usb/schema.py](prpd_usb/schema.py) for known payloads
