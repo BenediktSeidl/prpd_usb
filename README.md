@@ -9,6 +9,10 @@ Tested with
 Support for
 * NEDAP PowerRouter `PR50SB` Software version `Unknown`
 
+## Status of this project
+
+It worked fine, but the Battery of the PowerRouter broke and the whole system
+will be replaced, so I have no system to test with.
 
 ## Installing
 
