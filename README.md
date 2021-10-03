@@ -8,6 +8,7 @@ Tested with
 
 Support for
 * NEDAP PowerRouter `PR50SB` Software version `Unknown`
+* NEDAP PowerRouter `PR37SB`
 
 ## Status of this project
 

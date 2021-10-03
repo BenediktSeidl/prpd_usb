@@ -82,6 +82,69 @@ def test_pr37bi():
     }
 
 
+def test_pr37sb():
+    prpd = _PrPd(SerialFaker("PR37SB"))
+    prpd.init()
+    result = to_json((prpd.read()))
+    assert result == {
+        "battery": {
+            "consumed": 5806854,
+            "current": -19.02,
+            "power": -502,
+            "produced": 4497664,
+            "soc": 78,
+            "temp1": 26.8,
+            "temp2": 46.1,
+            "voltage": 26.0,
+        },
+        "grid": {
+            "current_phase_1": 10.600000000000001,
+            "current_phase_2": 29.0,
+            "current_phase_3": 37.9,
+            "power_va_phase_1": 241,
+            "power_va_phase_2": 653,
+            "power_va_phase_3": 867,
+            "power_w_phase_1": 209,
+            "power_w_phase_2": 622,
+            "power_w_phase_3": -847,
+            "total_phase_1": 7872100,
+            "total_phase_2": 4909000,
+            "total_phase_3": 4309400,
+            "voltage_phase_1": 227.20000000000002,
+            "voltage_phase_2": 227.0,
+            "voltage_phase_3": 227.4,
+        },
+        "platform": {
+            "consumed": 57868920,
+            "frequency": 50.01,
+            "power": 4,
+            "produced": 1657152,
+            "status": 18707,
+            "temp": 31.0,
+            "voltage": 229.0,
+        },
+        "solar": {
+            "current_string_1": 5.78,
+            "current_string_2": 5.86,
+            "status": 16,
+            "total": 20722671,
+            "total_phase_1": 0,
+            "total_phase_2": 0,
+            "total_phase_3": 0,
+            "total_string_1": 10168204,
+            "total_string_2": 10554467,
+            "va_phase_1": 0,
+            "va_phase_2": 0,
+            "va_phase_3": 0,
+            "voltage_string_1": 189.09,
+            "voltage_string_2": 185.01,
+            "w_phase_1": 0,
+            "w_phase_2": 0,
+            "w_phase_3": 0,
+        },
+    }
+
+
 def test_pr50sb():
     prpd = _PrPd(SerialFaker("PR50SB"))
     prpd.init()
