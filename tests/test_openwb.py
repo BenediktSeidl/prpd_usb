@@ -21,7 +21,7 @@ def test_openwb_37bi():
         {"payload": "225.60000000000002", "topic": "openWB/set/evu/VPhase2"},
         {"payload": "223.60000000000002", "topic": "openWB/set/evu/VPhase3"},
         {"payload": "49.99", "topic": "openWB/set/evu/HzFrequenz"},
-        {"payload": "1", "topic": "openWB/set/pv/1/W"},
+        {"payload": "4", "topic": "openWB/set/pv/1/W"},
         {"payload": "25054400", "topic": "openWB/set/pv/1/WhCounter"},
         {"payload": "-332", "topic": "openWB/set/houseBattery/W"},
         {"payload": "5868399", "topic": "openWB/set/houseBattery/WhImported"},

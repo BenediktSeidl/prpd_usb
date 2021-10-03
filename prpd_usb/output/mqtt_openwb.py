@@ -7,12 +7,16 @@ from paho.mqtt import publish
 
 Direct = namedtuple('Direct', ['key'])
 Map = namedtuple('Map', ['keys', 'function'])
+MultiMap = namedtuple('Map', ['keys', 'functions'])
 
 def _neg(value):
     return value * -1
 
 def _sum(*values):
     return sum(values)
+
+def _m_sum(*values):
+    return [sum(values)]
 
 MAPPING = {
     "openWB/set/evu/W": Map(keys=(('grid', 'power_w_phase_1'), ('grid', 'power_w_phase_2'), ('grid', 'power_w_phase_3')), function=_sum),
@@ -26,8 +30,8 @@ MAPPING = {
     "openWB/set/evu/VPhase3": Direct(('grid', 'voltage_phase_3')),
     "openWB/set/evu/HzFrequenz": Direct(('platform', 'frequency')),
 
-    "openWB/set/pv/1/W": Map(keys=(('solar', 'w_phase_3'),), function=_neg),
-    "openWB/set/pv/1/WhCounter": Direct(('solar', 'total_phase_3')),
+    "openWB/set/pv/1/W": MultiMap(keys=(('solar', 'w_phase_1'), ('solar', 'w_phase_2'), ('solar', 'w_phase_3'),), functions=(_m_sum, _neg)),
+    "openWB/set/pv/1/WhCounter": Map(keys=(('solar', 'total_phase_1'), ('solar', 'total_phase_2'), ('solar', 'total_phase_3')), function=_sum),
 
     "openWB/set/houseBattery/W": Map(keys=(('battery', 'power'),), function=_neg),
     "openWB/set/houseBattery/WhImported": Direct(('battery', 'consumed')),
@@ -46,6 +50,11 @@ def transform_to_openwb(prpd_data):
     for topic, mapping in MAPPING.items():
         if isinstance(mapping, Direct):
             payload = data[mapping.key]
+        elif isinstance(mapping, MultiMap):
+            values = [data[k] for k in mapping.keys]
+            for function in mapping.functions:
+                values = function(*values)
+            payload = values
         else:
             keys = [data[k] for k in mapping.keys]
             payload = mapping.function(*keys)
