@@ -36,29 +36,36 @@ MAPPING = {
 }
 
 
+def transform_to_openwb(prpd_data):
+    messages = []
+    data = {}
+
+    for command, field, _time, value in prpd_data:
+        data[(command.name, field.name)] = value
+
+    for topic, mapping in MAPPING.items():
+        if isinstance(mapping, Direct):
+            payload = data[mapping.key]
+        else:
+            keys = [data[k] for k in mapping.keys]
+            payload = mapping.function(*keys)
+
+        messages.append({
+            "topic": topic,
+            "payload": json.dumps(payload),
+        })
+    return messages
+
+
 def main(prpd_reader, args):
     auth = {}
     if args.mqtt_password and args.mqtt_username:
         auth["password"] = args.mqtt_password
         auth["username"] = args.mqtt_username
     while True:
-        messages = []
-        data = {}
 
-        for command, field, _time, value in prpd_reader.read():
-            data[(command.name, field.name)] = value
-
-        for topic, mapping in MAPPING.items():
-            if isinstance(mapping, Direct):
-                payload = data[mapping.key]
-            else:
-                keys = [data[k] for k in mapping.keys]
-                payload = mapping.function(*keys)
-
-            messages.append({
-                "topic": topic,
-                "payload": json.dumps(payload),
-            })
+        data = prpd_reader.read()
+        messages = transform_to_openwb(data)
 
         publish.multiple(messages, hostname=args.mqtt_hostname, port=args.mqtt_port, auth=auth)
         time.sleep(args.mqtt_interval)
