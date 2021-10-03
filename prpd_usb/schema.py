@@ -52,9 +52,9 @@ _COMMANDS = [
     ]),
     Command("grid", "5a0070040000e057a5", [
         Field('H', None, None, None),
-        Field('h', 'current_phase_1', "A", 0.1),
-        Field('h', 'current_phase_2', "A", 0.1),
-        Field('h', 'current_phase_3', "A", 0.1),
+        Field('h', 'current_phase_1', "A", 0.01),
+        Field('h', 'current_phase_2', "A", 0.01),
+        Field('h', 'current_phase_3', "A", 0.01),
 
         Field('H', 'voltage_phase_1', "V", 0.1),
         Field('H', 'voltage_phase_2', "V", 0.1),
