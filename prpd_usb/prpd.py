@@ -7,7 +7,7 @@ import threading
 import serial
 import libscrc
 
-from .schema import SCHEMA, FieldResult, CMD_MODEL, MODELS
+from .schema import commands_by_model, FieldResult, CMD_MODEL, MODELS
 
 logger = logging.getLogger(__name__)
 
@@ -58,9 +58,7 @@ class _PrPd:
         return unpacked
 
     def _get_commands(self):
-        for command in SCHEMA:
-            if command.models is None or self._model in command.models:
-                yield command
+        return commands_by_model(self._model)
 
     def init(self, model=None):
         if model is not None:
