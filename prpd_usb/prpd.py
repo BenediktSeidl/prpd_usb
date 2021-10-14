@@ -74,6 +74,10 @@ class _PrPd:
         self._model = MODELS[model]
         logger.info(f"Identified model {self._model}")
 
+    @property
+    def model(self):
+        return self._model
+
     def read(self):
         with self.lock:
             for command in self._get_commands():

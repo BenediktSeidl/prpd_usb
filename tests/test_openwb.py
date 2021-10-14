@@ -9,7 +9,7 @@ def test_openwb_37bi():
     prpd = _PrPd(SerialFaker("PR37Bi"))
     prpd.init()
     data = prpd.read()
-    messages = transform_to_openwb(data)
+    messages = transform_to_openwb(data, "PR37Bi")
     assert messages == [
         {"payload": "18", "topic": "openWB/set/evu/W"},
         {"payload": "1.17", "topic": "openWB/set/evu/APhase1"},
@@ -27,4 +27,28 @@ def test_openwb_37bi():
         {"payload": "5868399", "topic": "openWB/set/houseBattery/WhImported"},
         {"payload": "5545710", "topic": "openWB/set/houseBattery/WhExported"},
         {"payload": "76", "topic": "openWB/set/houseBattery/%Soc"},
+    ]
+
+def test_openwb_37sb():
+    prpd = _PrPd(SerialFaker("PR37SB"))
+    prpd.init()
+    data = prpd.read()
+    messages = transform_to_openwb(data, "PR37SB")
+    assert messages == [
+        {'payload': '-16', 'topic': 'openWB/set/evu/W'},
+        {'payload': '1.06', 'topic': 'openWB/set/evu/APhase1'},
+        {'payload': '2.9', 'topic': 'openWB/set/evu/APhase2'},
+        {'payload': '3.79', 'topic': 'openWB/set/evu/APhase3'},
+        {'payload': '17090500', 'topic': 'openWB/set/evu/WhImported'},
+        {'payload': '20722671', 'topic': 'openWB/set/evu/WhExported'},
+        {'payload': '227.20000000000002', 'topic': 'openWB/set/evu/VPhase1'},
+        {'payload': '227.0', 'topic': 'openWB/set/evu/VPhase2'},
+        {'payload': '227.4', 'topic': 'openWB/set/evu/VPhase3'},
+        {'payload': '50.01', 'topic': 'openWB/set/evu/HzFrequenz'},
+        {'payload': '2177.0987999999998', 'topic': 'openWB/set/pv/1/W'},
+        {'payload': '20722671', 'topic': 'openWB/set/pv/1/WhCounter'},
+        {'payload': '502', 'topic': 'openWB/set/houseBattery/W'},
+        {'payload': '5806854', 'topic': 'openWB/set/houseBattery/WhImported'},
+        {'payload': '4497664', 'topic': 'openWB/set/houseBattery/WhExported'},
+        {'payload': '78', 'topic': 'openWB/set/houseBattery/%Soc'},
     ]
