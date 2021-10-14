@@ -103,21 +103,12 @@ def test_pr37sb():
         "solar": {
             "current_string_1": 5.78,
             "current_string_2": 5.86,
-            "status": 16,
+            "status": 61507,
             "total": 20722671,
-            "total_phase_1": 0,
-            "total_phase_2": 0,
-            "total_phase_3": 0,
             "total_string_1": 10168204,
             "total_string_2": 10554467,
-            "va_phase_1": 0,
-            "va_phase_2": 0,
-            "va_phase_3": 0,
             "voltage_string_1": 189.09,
             "voltage_string_2": 185.01,
-            "w_phase_1": 0,
-            "w_phase_2": 0,
-            "w_phase_3": 0,
         },
     }
 
